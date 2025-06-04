@@ -1,12 +1,23 @@
 package graph;
-// import list.*;
+
 public class Edge<T> {
     private Vertex<T> refDest;
+    private Vertex<T> refSource;
     private int weight;
-
     public Edge(Vertex<T> destination, int weight) {
         this.refDest = destination;
         this.weight = weight;
+    }
+    public Edge(Vertex<T> refSource, Vertex<T> destination, int weight) {
+        this.refSource = refSource;
+        this.refDest = destination;
+        this.weight = weight;
+    }
+    public Vertex<T> getSource() {
+        return this.refSource;
+    }
+    public void setSource(Vertex<T> refSource) {
+        this.refSource = refSource;
     }
     public Vertex<T> getDestination() {
         return this.refDest;

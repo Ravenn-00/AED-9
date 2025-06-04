@@ -1,5 +1,5 @@
 package graph;
-import list.*;
+import list.LinkedList;
 
 public class Vertex<T> {
     private T data;
