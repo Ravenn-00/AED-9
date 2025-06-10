@@ -8,6 +8,10 @@ public class Edge<T> {
         this.refDest = destination;
         this.weight = weight;
     }
+    public Edge(Vertex<T> refSource, Vertex<T> destination) {
+        this.refSource = refSource;
+        this.refDest = destination;
+    }
     public Edge(Vertex<T> refSource, Vertex<T> destination, int weight) {
         this.refSource = refSource;
         this.refDest = destination;

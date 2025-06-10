@@ -1,12 +1,12 @@
 package graph;
 
-import list.LinkedList;
+import list.LinkedLista;
 
 public class GraphListEdge<V,E> {
-    LinkedList<VertexObj<V,E>> secVertex;
-    LinkedList<EdgeObj<V,E>> secEdge;
+    LinkedLista<VertexObj<V,E>> secVertex;
+    LinkedLista<EdgeObj<V,E>> secEdge;
     public GraphListEdge(){
-        this.secVertex = new LinkedList<VertexObj<V,E>>();
-        this.secEdge = new LinkedList<EdgeObj<V,E>>();
+        this.secVertex = new LinkedLista<VertexObj<V,E>>();
+        this.secEdge = new LinkedLista<EdgeObj<V,E>>();
     }
 }

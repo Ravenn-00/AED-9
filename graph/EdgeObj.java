@@ -12,3 +12,4 @@ public class EdgeObj<V,E> {
         this.position = position;
     }
 }
+

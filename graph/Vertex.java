@@ -3,11 +3,11 @@ import list.LinkedList;
 
 public class Vertex<T> {
     private T data;
-    protected LinkedList<Edge> listAdj;
+    protected LinkedList<Edge<T>> listAdj; // Cambiado a Edge<T>
 
     public Vertex(T data) {
         this.data = data;
-        this.listAdj = new LinkedList<Edge>();
+        this.listAdj = new LinkedList<Edge<T>>(); // Cambiado a Edge<T>
     }
     public T getData() {
         return data;

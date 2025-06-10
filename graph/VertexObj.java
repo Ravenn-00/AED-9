@@ -8,3 +8,4 @@ public class VertexObj<V,E>{
         this.position = position;
     }
 }
+
