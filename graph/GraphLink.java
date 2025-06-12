@@ -1,5 +1,6 @@
 package graph;
 
+import list.ExceptionIsEmpty;
 import list.LinkedLista;
 import list.Node;
 import list.StackLink;
@@ -12,10 +13,10 @@ public class GraphLink<T> {
         this.listVertex = new LinkedLista<>();
         this.listEdge = new LinkedLista<>();
     }
-    public void insertVertex(T data) {
+    public void insertVertex(T data) { // inserta un nuevo vertice
         this.listVertex.insertLast(new list.Node<>(new Vertex<T>(data)));   
     }
-    public void insertEdge(T verOri, T verDes) {
+    public void insertEdge(T verOri, T verDes) {  // inserta una arista entre dos vertices
         Vertex<T> vOri = null, vDes = null;
         list.Node<Vertex<T>> current = this.listVertex.head;
         while (current != null) {
@@ -33,10 +34,168 @@ public class GraphLink<T> {
             this.listEdge.insertLast(new list.Node<>(edge));
         }
     }
+    public boolean searchVertex(T v) {  // busca si un vertice existe en el grafo
+        Node<Vertex<T>> current = this.listVertex.head;
+        while (current != null) {
+            if (current.getData().getData().equals(v)) {
+                return true;
+            }
+            current = current.getNext();
+        }
+        return false;
+    }
+    public boolean searchEdge(T v, T z) {   // busca si existe una arista entre dos vertices
+        Vertex<T> vertexV = null, vertexZ = null;
+        Node<Vertex<T>> current = this.listVertex.head;
+        while (current != null) {
+            if (current.getData().getData().equals(v)) {
+                vertexV = current.getData();
+            }
+            if (current.getData().getData().equals(z)) {
+                vertexZ = current.getData();
+            }
+            current = current.getNext();
+        }        
+        if (vertexV == null || vertexZ == null) return false;
+        Node<Edge<T>> edgeNode = vertexV.listAdj.head;
+        while (edgeNode != null) {
+            if (edgeNode.getData().getDestination().equals(vertexZ)) {
+                return true;
+            }
+            edgeNode = edgeNode.getNext();
+        }
+        
+        return false;
+    }
+    public void removeVertex(T v) { 
+        Vertex<T> vertexToRemove = null;
+        Node<Vertex<T>> current = this.listVertex.head;
+        Node<Vertex<T>> prev = null;
+        while (current != null) {
+            if (current.getData().getData().equals(v)) {
+                vertexToRemove = current.getData();
+                break;
+            }
+            prev = current;
+            current = current.getNext();
+        }        
+        if (vertexToRemove == null) return;
+        current = this.listVertex.head;
+        while (current != null) {
+            Vertex<T> vertex = current.getData();
+            Node<Edge<T>> edgeNode = vertex.listAdj.head;
+            Node<Edge<T>> edgePrev = null;
+            
+            while (edgeNode != null) {
+                if (edgeNode.getData().getDestination().equals(vertexToRemove)) {
+                    if (edgePrev == null) {
+                        vertex.listAdj.head = edgeNode.getNext();
+                    } else {
+                        edgePrev.setNext(edgeNode.getNext());
+                    }
+                } else {
+                    edgePrev = edgeNode;
+                }
+                edgeNode = edgeNode.getNext();
+            }
+            current = current.getNext();
+        }
+        if (prev == null) {
+            this.listVertex.head = this.listVertex.head.getNext();
+        } else {
+            prev.setNext(current.getNext());
+        }
+    }
+    public void removeEdge(T v, T z) {  // elimina una arista entre dos vertices
+        Vertex<T> vertexV = null, vertexZ = null;
+        Node<Vertex<T>> current = this.listVertex.head;
+        while (current != null) {
+            if (current.getData().getData().equals(v)) {
+                vertexV = current.getData();
+            }
+            if (current.getData().getData().equals(z)) {
+                vertexZ = current.getData();
+            }
+            current = current.getNext();
+        }
+        if (vertexV == null || vertexZ == null) return;
+        Node<Edge<T>> edgeNode = vertexV.listAdj.head;
+        Node<Edge<T>> edgePrev = null;
+        
+        while (edgeNode != null) {
+            if (edgeNode.getData().getDestination().equals(vertexZ)) {
+                if (edgePrev == null) {
+                    vertexV.listAdj.head = edgeNode.getNext();
+                } else {
+                    edgePrev.setNext(edgeNode.getNext());
+                }
+                break;
+            }
+            edgePrev = edgeNode;
+            edgeNode = edgeNode.getNext();
+        }
+        edgeNode = vertexZ.listAdj.head;
+        edgePrev = null;
+        
+        while (edgeNode != null) {
+            if (edgeNode.getData().getDestination().equals(vertexV)) {
+                if (edgePrev == null) {
+                    vertexZ.listAdj.head = edgeNode.getNext();
+                } else {
+                    edgePrev.setNext(edgeNode.getNext());
+                }
+                break;
+            }
+            edgePrev = edgeNode;
+            edgeNode = edgeNode.getNext();
+        }
+    }
+    public void dfs(T v) {  // recorrido DFS (profundidad) desde un vertice
+        Vertex<T> start = null;
+        Node<Vertex<T>> current = this.listVertex.head;
+        while (current != null) {
+            if (current.getData().getData().equals(v)) {
+                start = current.getData();
+                break;
+            }
+            current = current.getNext();
+        }
+        
+        if (start == null) {
+            System.out.println("vertice no existe ");
+            return;
+        }
+        
+        LinkedLista<Vertex<T>> visited = new LinkedLista<>();
+        StackLink<Vertex<T>> stack = new StackLink<>();
+        
+        stack.push(start);
+        visited.insertLast(new Node<>(start));
+        
+        while (!stack.isEmpty()) {
+            try {
+                Vertex<T> vertex = stack.pop();
+                System.out.print(vertex.getData() + " ");
+                
+                Node<Edge<T>> adj = vertex.listAdj.head;
+                while (adj != null) {
+                    Vertex<T> neighbor = adj.getData().getDestination();
+                    if (!visited.exist(neighbor)) {
+                        stack.push(neighbor);
+                        visited.insertLast(new Node<>(neighbor));
+                    }
+                    adj = adj.getNext();
+                }
+            } catch (ExceptionIsEmpty e) {
+                break;
+            }
+        }
+        System.out.println();
+    }
     public String toString() {
         return this.listVertex.toString();
     }
-    public void bfs(T v) {
+    public void bfs(T v) {   // recorrido BFS (anchura) desde un vertice
         Vertex<T> start = null;
         Node<Vertex<T>> current = this.listVertex.head;
         while (current != null) {
@@ -47,7 +206,7 @@ public class GraphLink<T> {
             current = current.getNext();
         }
         if (start == null) {
-            System.out.println("Vertex no existe.  ");
+            System.out.println("vertex no existe.  ");
             return;
         }
         LinkedLista<Vertex<T>> visited = new LinkedLista<>();
@@ -70,7 +229,7 @@ public class GraphLink<T> {
         }
         System.out.println();
     }
-    public LinkedLista<T> bfsPath(T v, T z) {
+    public LinkedLista<T> bfsPath(T v, T z) {   // encuentra el camino mas corto entre dos vertices usando BFS
         Vertex<T> start = null, end = null;
         Node<Vertex<T>> current = this.listVertex.head;
         while (current != null) {
@@ -143,7 +302,7 @@ public class GraphLink<T> {
             this.parent = parent;
         }
     }
-    public void insertEdgeWeight(T v, T z, int w) {
+    public void insertEdgeWeight(T v, T z, int w) {   // inserta una arista con peso entre dos vertices
         Vertex<T> vOri = null, vDes = null;
         Node<Vertex<T>> current = this.listVertex.head;
         while (current != null) {
@@ -160,7 +319,7 @@ public class GraphLink<T> {
             this.listEdge.insertLast(new Node<>(edge2));
         }
     }
-    public boolean isConexo() {
+    public boolean isConexo() {     // verifica si el grafo es conexo (todos los vertices estan conectados)
         if (this.listVertex.isEmpty()) return true;
         LinkedLista<Vertex<T>> visited = new LinkedLista<>();
         QueueLink<Vertex<T>> queue = new QueueLink<>();
@@ -186,7 +345,7 @@ public class GraphLink<T> {
         }
         return visited.lenght() == this.listVertex.lenght();
     }
-    public LinkedLista<T> shortPath(T v, T z) {
+    public LinkedLista<T> shortPath(T v, T z) {   // encuentra el camino mas corto usando Dijkstra
         return dijkstraPath(v, z);
     }
     public StackLink<T> Dijkstra(T v, T w) {
@@ -202,7 +361,6 @@ public class GraphLink<T> {
             try {
                 stack.push(temp.pop());
             } catch (list.ExceptionIsEmpty e) {
-                // No debería ocurrir
             }
         }
         return stack;
@@ -273,9 +431,90 @@ public class GraphLink<T> {
             try {
                 path.insertLast(new Node<>(tempStack.pop()));
             } catch (list.ExceptionIsEmpty e) {
-                // No debería ocurrir
             }
         }
         return path;
+    }
+    public String getGraphType() {   // devuelve el tipo de grafo (completo, ciclo, rueda, camino)
+        if (isComplete()) return "Completo (K" + listVertex.lenght() + ")";
+        if (isCycle()) return "Ciclo (C" + listVertex.lenght() + ")";
+        if (isWheel()) return "Rueda (W" + (listVertex.lenght()-1) + ")";
+        if (isPath()) return "Camino (P" + listVertex.lenght() + ")";
+        return "Grafo general";
+    }
+    private boolean isComplete() {  // verifica si el grafo es completo (todos los vertices conectados entre si)
+        int n = listVertex.lenght();
+        int expectedEdges = n * (n - 1) / 2;
+        int actualEdges = 0;
+        Node<Vertex<T>> current = listVertex.head;
+        while (current != null) {
+            actualEdges += current.getData().listAdj.lenght();
+            current = current.getNext();
+        }
+        actualEdges = actualEdges / 2;        
+        return actualEdges == expectedEdges;
+    }
+    
+    private boolean isCycle() {     // verifica si el grafo es un ciclo (todos los vertices con grado 2)
+        if (listVertex.lenght() < 3) return false;
+        Node<Vertex<T>> current = listVertex.head;
+        while (current != null) {
+            if (current.getData().listAdj.lenght() != 2) return false;
+            current = current.getNext();
+        }
+        return isConexo();
+    }
+    
+    private boolean isWheel() {   // verifica si el grafo es una rueda (un centro conectado a un ciclo)
+        int n = listVertex.lenght();
+        if (n < 4) return false;
+        
+        int centerCount = 0;
+        int rimCount = 0;
+        
+        Node<Vertex<T>> current = listVertex.head;
+        while (current != null) {
+            int degree = current.getData().listAdj.lenght();
+            if (degree == n-1) {
+                centerCount++;
+            } else if (degree == 3) {
+                rimCount++;
+            } else {
+                return false;
+            }
+            current = current.getNext();
+        }
+        
+        return centerCount == 1 && rimCount == n-1;
+    }
+    
+    private boolean isPath() { // verifica si el grafo es un camino (vertices con grado 1 o 2)
+        if (listVertex.lenght() < 2) return true;        
+        int endCount = 0;
+        int middleCount = 0;        
+        Node<Vertex<T>> current = listVertex.head;
+        while (current != null) {
+            int degree = current.getData().listAdj.lenght();
+            if (degree == 1) {
+                endCount++;
+            } else if (degree == 2) {
+                middleCount++;
+            } else {
+                return false;
+            }
+            current = current.getNext();
+        }
+        
+        return endCount == 2 && middleCount == listVertex.lenght() - 2 && isConexo();
+    }    
+    public int getNodeDegree(T v) { // obtiene el grado de un vertice (numero de aristas)
+        Node<Vertex<T>> current = listVertex.head;
+        while (current != null) {
+            if (current.getData().getData().equals(v)) {
+                return current.getData().listAdj.lenght();
+            }
+            current = current.getNext();
+        }
+        return -1;
     }
 }

@@ -4,15 +4,15 @@ public class Edge<T> {
     private Vertex<T> refDest;
     private Vertex<T> refSource;
     private int weight;
-    public Edge(Vertex<T> destination, int weight) {
+    public Edge(Vertex<T> destination, int weight) { //constructor
         this.refDest = destination;
         this.weight = weight;
     }
-    public Edge(Vertex<T> refSource, Vertex<T> destination) {
+    public Edge(Vertex<T> refSource, Vertex<T> destination) { //constructor
         this.refSource = refSource;
         this.refDest = destination;
     }
-    public Edge(Vertex<T> refSource, Vertex<T> destination, int weight) {
+    public Edge(Vertex<T> refSource, Vertex<T> destination, int weight) { //constructor
         this.refSource = refSource;
         this.refDest = destination;
         this.weight = weight;
@@ -35,12 +35,8 @@ public class Edge<T> {
     public void setWeight(int weight) {
         this.weight = weight;
     }
-    public boolean equals(Object o) {
-        if(o instanceof Edge<?>) {
-            Edge<T> e = (Edge<T>) o;
-            return this.refDest.equals(e.getDestination()) && this.weight == e.getWeight();
-        }
-        return false;
+    public boolean isEqual(Edge<T> other) { // metodo para comparar si 2 aristas son iguales (mismo destino y peso)
+        return this.refDest.isEqual(other.getDestination()) && this.weight == other.getWeight();
     }
     public String toString() {
         if(this.weight > -1 ) return this.refDest.getData() + " (" + this.weight + ")";

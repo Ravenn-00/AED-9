@@ -1,13 +1,13 @@
 package graph;
-import list.LinkedList;
+import list.LinkedLista;
 
 public class Vertex<T> {
     private T data;
-    protected LinkedList<Edge<T>> listAdj; // Cambiado a Edge<T>
+    protected LinkedLista<Edge<T>> listAdj;
 
     public Vertex(T data) {
         this.data = data;
-        this.listAdj = new LinkedList<Edge<T>>(); // Cambiado a Edge<T>
+        this.listAdj = new LinkedLista<Edge<T>>();
     }
     public T getData() {
         return data;
@@ -15,12 +15,8 @@ public class Vertex<T> {
     public void setData(T data) {
         this.data = data;
     }
-    public boolean equals(Object o) {
-        if(o instanceof Vertex<?>) {
-            Vertex<T> v = (Vertex<T>) o;
-            return this.data.equals(v.getData());
-        }
-        return false;
+    public boolean isEqual(Vertex<T> other) { // compara si dos vertices son iguales
+        return this.data.equals(other.getData());
     }
     public String toString() {
         return this.data + " --> " + listAdj.toString();
