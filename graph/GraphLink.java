@@ -529,4 +529,29 @@ public class GraphLink<T> implements TADGraph<T> {
         int grado = grafo.getNodeDegree(nodoConsulta);
         System.out.println("Grado del nodo '" + nodoConsulta + "': " + grado);
     }
+    public boolean isCenterOfWheel(T v) {
+        if (!searchVertex(v)) return false;
+        if (listVertex.lenght() < 4) return false;
+        Vertex<T> center = null;
+        Node<Vertex<T>> current = listVertex.head;
+        while (current != null) {
+            if (current.getData().getData().equals(v)) {
+                center = current.getData();
+                break;
+            }
+            current = current.getNext();
+        }
+        if (center == null) return false;
+        int n = listVertex.lenght();
+        if (center.listAdj.lenght() != n - 1) return false;
+        current = listVertex.head; // Verifica que todos los demás vértices tengan grado 3
+        while (current != null) {
+            Vertex<T> vertex = current.getData();
+            if (!vertex.equals(center)) {
+                if (vertex.listAdj.lenght() != 3) return false;
+            }
+            current = current.getNext();
+        }
+        return isConexo(); // confirma que todo esta conectado
+    }
 }
