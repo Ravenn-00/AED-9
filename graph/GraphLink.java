@@ -6,7 +6,7 @@ import list.Node;
 import list.StackLink;
 import list.QueueLink;
 
-public class GraphLink<T> {
+public class GraphLink<T> implements TADGraph<T> {
     protected LinkedLista<Vertex<T>> listVertex;
     protected LinkedLista<Edge<T>> listEdge;
     public GraphLink() {
@@ -516,5 +516,17 @@ public class GraphLink<T> {
             current = current.getNext();
         }
         return -1;
+    }
+    public static <T> void analizarGrafo(GraphLink<T> grafo, T nodoConsulta) { // 
+        if (!grafo.searchVertex(nodoConsulta)) {
+            System.out.println("El nodo '" + nodoConsulta + "' no existe en el grafo.");
+            return;
+        }
+
+        System.out.println("GRAFO:");
+        System.out.println("Tipo de grafo: " + grafo.getGraphType());
+
+        int grado = grafo.getNodeDegree(nodoConsulta);
+        System.out.println("Grado del nodo '" + nodoConsulta + "': " + grado);
     }
 }
